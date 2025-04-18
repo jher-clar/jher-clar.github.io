@@ -1,10 +1,122 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <title>My Poem Website</title>
-  </head>
-  <body>
-    <h1>Welcome to My Poem World 🌸</h1>
-    <p>You can write poems, get AI help, and rate others' work.</p>
-  </body>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Jhermaine's Poems Library</title>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Quicksand&display=swap" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Quicksand', sans-serif;
+      background: #fff0f5;
+      color: #333;
+    }
+    header {
+      background: #ff66b2;
+      color: white;
+      padding: 1rem;
+      text-align: center;
+      font-family: 'Fredoka One', cursive;
+      font-size: 1.8rem;
+    }
+    nav {
+      display: flex;
+      justify-content: center;
+      background: #ffb3d9;
+      padding: 0.5rem;
+      gap: 2rem;
+    }
+    nav a {
+      text-decoration: none;
+      color: white;
+      font-weight: bold;
+    }
+    .hero {
+      padding: 2rem;
+      text-align: center;
+      background: #fff6fb;
+    }
+    .hero h2 {
+      font-size: 1.5rem;
+    }
+    .hana-chat {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: #ffe4f2;
+      border-radius: 20px;
+      padding: 1rem;
+      max-width: 250px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+      font-size: 0.95rem;
+    }
+    .hana-chat::before {
+      content: "\1F47C";
+      margin-right: 0.5rem;
+    }
+    .poem-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 1rem;
+      padding: 1rem;
+    }
+    .poem-card {
+      background: white;
+      border-radius: 10px;
+      padding: 1rem;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      text-align: center;
+    }
+    footer {
+      text-align: center;
+      background: #ffcce6;
+      padding: 1rem;
+      margin-top: 2rem;
+      font-size: 0.8rem;
+    }
+    @media screen and (max-width: 600px) {
+      nav {
+        flex-direction: column;
+        align-items: center;
+      }
+      .hana-chat {
+        max-width: 90%;
+        right: 5%;
+        bottom: 10px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>Jhermaine's Poems Library</header>
+
+  <nav>
+    <a href="#">Home</a>
+    <a href="#">Submit</a>
+    <a href="#">About Hana</a>
+  </nav>
+
+  <section class="hero">
+    <h2>Welcome to a magical world of poems!</h2>
+    <p>Write with joy, rhyme with love, and let Hana help you bloom! 🌸</p>
+  </section>
+
+  <div class="poem-grid">
+    <div class="poem-card">🌟 Roses are red, violets are blue...</div>
+    <div class="poem-card">🎵 A little verse to start your day...</div>
+    <div class="poem-card">🍬 Sweet poems from sweet hearts!</div>
+  </div>
+
+  <div class="hana-chat">
+    Hiya! I'm Hana! 💖 Wanna write a poem with me?
+    I can give you little hints and sprinkle magic stars when you’re done~ 🌟
+    <br/><br/>
+    <em>(Chatbot space here – ready for integration!)</em>
+  </div>
+
+  <footer>
+    Made with love by Hana & Jhermaine. 💌
+  </footer>
+</body>
 </html>
