@@ -47,24 +47,92 @@ nav a:hover {
   color: #cc0077;
 }
 
-.poem-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-  gap: 1.5rem;
-  padding: 2rem;
+.carousel {
+  display: flex;
+  overflow-x: auto;
+  gap: 1rem;
+  padding: 1rem;
+  scroll-snap-type: x mandatory;
 }
 
 .poem-card {
   background: white;
   border-radius: 12px;
   padding: 1rem;
+  min-width: 200px;
+  flex: 0 0 auto;
+  scroll-snap-align: start;
   box-shadow: 0 4px 10px rgba(0,0,0,0.1);
   transition: transform 0.2s ease;
   font-size: 0.95rem;
+  text-align: center;
 }
 
 .poem-card:hover {
   transform: scale(1.05);
+}
+
+.poem-card::after {
+  content: "\A— By Unknown";
+  white-space: pre;
+  display: block;
+  margin-top: 0.5rem;
+  font-style: italic;
+  color: #777;
+}
+
+.form-container {
+  padding: 2rem;
+  text-align: center;
+}
+
+textarea {
+  width: 90%;
+  max-width: 500px;
+  padding: 1rem;
+  border: 2px solid #ff99cc;
+  border-radius: 8px;
+  font-family: inherit;
+  resize: vertical;
+}
+
+input[type="text"] {
+  width: 90%;
+  max-width: 500px;
+  padding: 0.75rem;
+  border: 2px solid #ff99cc;
+  border-radius: 8px;
+  font-family: inherit;
+  margin-bottom: 1rem;
+}
+
+.submit-btn {
+  background: #ff66b2;
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 25px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.submit-btn:hover {
+  background: #e0559f;
+}
+
+.result-message {
+  margin-top: 1rem;
+  font-style: italic;
+  color: #aa3366;
+}
+
+.about {
+  padding: 2rem;
+  max-width: 600px;
+  margin: auto;
+  text-align: center;
+  line-height: 1.6;
 }
 
 .hana-chat {
@@ -83,7 +151,7 @@ nav a:hover {
 }
 
 .hana-chat::before {
-  content: \"👧\";
+  content: "👧";
   font-size: 1.2rem;
   margin-right: 0.5rem;
 }
@@ -113,5 +181,10 @@ footer {
 
   .hero h2 {
     font-size: 1.3rem;
+  }
+
+  .carousel {
+    flex-direction: row;
+    overflow-x: auto;
   }
 }
