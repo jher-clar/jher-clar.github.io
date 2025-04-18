@@ -1,190 +1,191 @@
-body {
+/* General Reset */
+* {
   margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
   font-family: 'Quicksand', sans-serif;
-  background: #fff0f5;
+  background: linear-gradient(to bottom right, #fef6f9, #fffafc);
   color: #333;
+  padding-bottom: 80px;
 }
 
+/* Header */
 header {
-  background: linear-gradient(90deg, #ff66b2, #ff85c1);
+  background-color: #ff9ecb;
   color: white;
-  padding: 1rem;
   text-align: center;
+  padding: 20px;
   font-family: 'Fredoka One', cursive;
-  font-size: 2rem;
-  letter-spacing: 1px;
+  font-size: 2em;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
 }
 
+/* Navigation */
 nav {
+  background-color: #ffe1ef;
   display: flex;
   justify-content: center;
-  background: #ffb3d9;
-  padding: 0.5rem 1rem;
-  gap: 2rem;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  gap: 30px;
+  padding: 12px 0;
+  font-size: 1.1em;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
 }
 
 nav a {
+  color: #d9008d;
   text-decoration: none;
-  color: white;
   font-weight: bold;
-  transition: color 0.3s;
+  transition: color 0.2s ease;
 }
 
 nav a:hover {
-  color: #660033;
+  color: #ff49b4;
 }
 
+/* Sections */
+.section {
+  padding: 30px;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+/* Hero */
 .hero {
-  padding: 2rem 1rem;
   text-align: center;
-  background: #fff6fb;
-  background-image: url('https://www.transparenttextures.com/patterns/baby-powder.png');
+  margin-bottom: 30px;
 }
 
 .hero h2 {
-  font-size: 1.7rem;
-  color: #cc0077;
+  font-size: 2em;
+  margin-bottom: 10px;
+  color: #d9008d;
 }
 
+/* Poem Carousel */
 .carousel {
   display: flex;
-  overflow-x: auto;
-  gap: 1rem;
-  padding: 1rem;
-  scroll-snap-type: x mandatory;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: center;
 }
 
 .poem-card {
-  background: white;
-  border-radius: 12px;
-  padding: 1rem;
-  min-width: 200px;
-  flex: 0 0 auto;
-  scroll-snap-align: start;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  background-color: #fff0f7;
+  border: 2px dashed #ff7bbb;
+  border-radius: 15px;
+  padding: 20px;
+  width: 250px;
+  font-size: 0.95em;
+  color: #4b004b;
+  box-shadow: 2px 4px 8px rgba(0,0,0,0.05);
   transition: transform 0.2s ease;
-  font-size: 0.95rem;
-  text-align: center;
 }
 
 .poem-card:hover {
-  transform: scale(1.05);
+  transform: scale(1.04);
 }
 
-.poem-card::after {
-  content: "\A— By Unknown";
-  white-space: pre;
-  display: block;
-  margin-top: 0.5rem;
-  font-style: italic;
-  color: #777;
-}
-
+/* Submit Form */
 .form-container {
-  padding: 2rem;
+  background-color: #fff3fa;
+  padding: 30px;
+  border-radius: 20px;
+  border: 1px solid #ffd6eb;
+  box-shadow: 0 6px 12px rgba(0,0,0,0.05);
   text-align: center;
 }
 
-textarea {
+textarea, input[type="text"] {
   width: 90%;
-  max-width: 500px;
-  padding: 1rem;
-  border: 2px solid #ff99cc;
-  border-radius: 8px;
-  font-family: inherit;
-  resize: vertical;
-}
-
-input[type="text"] {
-  width: 90%;
-  max-width: 500px;
-  padding: 0.75rem;
-  border: 2px solid #ff99cc;
-  border-radius: 8px;
-  font-family: inherit;
-  margin-bottom: 1rem;
+  margin: 10px 0;
+  padding: 12px;
+  border: 1px solid #ffb3dc;
+  border-radius: 10px;
+  font-size: 1em;
+  background-color: #fff;
 }
 
 .submit-btn {
-  background: #ff66b2;
+  background-color: #ff7bbb;
   color: white;
   border: none;
-  padding: 0.75rem 1.5rem;
+  padding: 10px 25px;
+  font-size: 1em;
   border-radius: 25px;
-  font-weight: bold;
   cursor: pointer;
-  transition: background 0.3s;
+  transition: background-color 0.3s ease;
 }
 
 .submit-btn:hover {
-  background: #e0559f;
+  background-color: #e856a0;
 }
 
 .result-message {
-  margin-top: 1rem;
-  font-style: italic;
-  color: #aa3366;
+  margin-top: 20px;
+  font-weight: bold;
+  color: #b40068;
 }
 
+/* About Section */
 .about {
-  padding: 2rem;
-  max-width: 600px;
-  margin: auto;
-  text-align: center;
-  line-height: 1.6;
+  background-color: #fff0f9;
+  padding: 25px;
+  border-radius: 15px;
+  border: 1px solid #ffd0eb;
+  font-size: 1.1em;
+  color: #4b004b;
+  line-height: 1.6em;
 }
 
-.hana-chat {
+/* Hana Bot Bubble */
+.hana-bubble {
   position: fixed;
   bottom: 20px;
   right: 20px;
-  background: #ffe4f2;
-  border-radius: 20px;
-  padding: 1rem;
-  max-width: 270px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-  font-size: 0.95rem;
-  line-height: 1.4;
-  z-index: 1000;
-  border: 2px dashed #ff99cc;
+  animation: float 5s infinite ease-in-out;
+  z-index: 999;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: #fff0f9;
+  border: 2px solid #ffc8e4;
+  border-radius: 30px;
+  padding: 10px 15px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.15);
 }
 
-.hana-chat::before {
-  content: "👧";
-  font-size: 1.2rem;
-  margin-right: 0.5rem;
+.hana-avatar {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  border: 2px solid #ff9ac2;
 }
 
+.hana-text {
+  font-size: 0.9em;
+  color: #a10068;
+  max-width: 200px;
+}
+
+/* Floating Animation */
+@keyframes float {
+  0% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+  100% { transform: translateY(0); }
+}
+
+/* Footer */
 footer {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  background-color: #ffb9dd;
   text-align: center;
-  background: #ffcce6;
-  padding: 1rem;
-  margin-top: 2rem;
-  font-size: 0.8rem;
-  color: #660033;
-  font-weight: bold;
-}
-
-@media screen and (max-width: 600px) {
-  nav {
-    flex-direction: column;
-    align-items: center;
-  }
-
-  .hana-chat {
-    max-width: 85%;
-    right: 7%;
-    bottom: 10px;
-    font-size: 1rem;
-  }
-
-  .hero h2 {
-    font-size: 1.3rem;
-  }
-
-  .carousel {
-    flex-direction: row;
-    overflow-x: auto;
-  }
+  padding: 10px;
+  color: #4b004b;
+  font-size: 0.9em;
+  box-shadow: 0 -2px 6px rgba(0,0,0,0.05);
 }
