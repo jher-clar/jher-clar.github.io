@@ -5,14 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Jhermaine's Poems Library</title>
   <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Quicksand&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css">
-  <script>
-    function showSection(id) {
-      document.querySelectorAll(".section").forEach(s => s.style.display = "none");
-      document.getElementById(id).style.display = "block";
-    }
-    window.onload = () => showSection('home');
-  </script>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <header>Jhermaine's Poems Library</header>
@@ -30,6 +23,7 @@
       <p>Write with joy, rhyme with love, and let Hana help you bloom! 🌸</p>
     </div>
     <div class="carousel" id="poemList">
+      <!-- Existing sample poems -->
       <div class="poem-card">
         <p>🌟 "The stars above whisper your name..."</p>
         <p><em>— Anonymous</em></p>
@@ -72,36 +66,55 @@
     </div>
   </section>
 
-  <!-- Chat Bubble -->
-  <div class="hana-chat">
-    Hiya! I'm Hana! 💖 Wanna write a poem with me?
-    I can give you little hints and sprinkle magic stars when you’re done~ 🌟
-    <br/><br/>
-    <em>(Chatbot space here – ready for integration!)</em>
+  <!-- Floating Hana Bot Avatar -->
+  <div class="hana-bubble" id="hanaBubble">
+    <img src="avatar.png" alt="Hana" class="hana-avatar">
+    <div class="hana-text" id="hanaText">
+      Hiya! I'm Hana! 💖 Wanna write a poem with me?
+    </div>
   </div>
 
   <footer>
     Made with love by Jhermaine. 💌
   </footer>
 
+  <!-- Scripts -->
+  <script>
+    function showSection(id) {
+      document.querySelectorAll(".section").forEach(s => s.style.display = "none");
+      document.getElementById(id).style.display = "block";
+    }
+    window.onload = () => showSection('home');
+  </script>
+
+  <script src="poem-scoring.js"></script>
+  <script src="hana-bot.js"></script>
+
   <script>
     const poemForm = document.getElementById("poemForm");
     const poemList = document.getElementById("poemList");
     const resultMsg = document.getElementById("resultMsg");
 
-    poemForm?.addEventListener("submit", function (e) {
+    poemForm?.addEventListener("submit", async function (e) {
       e.preventDefault();
       const poem = document.getElementById("poem").value.trim();
       const author = document.getElementById("author").value.trim();
 
       if (poem && author) {
+        const score = await scorePoem(poem); // from poem-scoring.js
         const card = document.createElement("div");
         card.className = "poem-card";
         card.innerHTML = `<p>${poem.replace(/\n/g, "<br>")}</p><p><em>— ${author}</em></p>`;
         poemList.appendChild(card);
 
-        resultMsg.textContent = `Yay! Hana says your poem is sparkly amazing, ${author}! ✨`;
+        const rating = score >= 85 ? "🌟 Absolutely magical!" :
+                       score >= 60 ? "💖 So sweet and dreamy!" :
+                       score >= 40 ? "✨ A gentle breeze of feelings." :
+                                     "🫧 Needs a little more sparkle.";
+
+        resultMsg.textContent = `Hana gives your poem a ${score}/100! ${rating}`;
         poemForm.reset();
+        speakAsHana(`That was lovely, ${author}! You got ${score} out of 100!`);
       }
     });
   </script>
