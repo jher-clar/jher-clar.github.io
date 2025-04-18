@@ -112,22 +112,27 @@
         card.innerHTML = `<p>${poem.replace(/\n/g, "<br>")}</p><p><em>— ${author}</em></p>`;
         poemList.appendChild(card);
 
-        const rating = score >= 85 ? "🌟 Absolutely magical!" :
-                       score >= 60 ? "💖 So sweet and dreamy!" :
-                       score >= 40 ? "✨ A gentle breeze of feelings." :
-                                     "🫧 Needs a little more sparkle.";
+const rating = score >= 85 ? "🌟 Absolutely magical!" :
+               score >= 60 ? "💖 So sweet and dreamy!" :
+               score >= 40 ? "✨ A gentle breeze of feelings." :
+                             "🫧 Needs a little more sparkle.";
 
-        <div id="poem-scorecard" style="display:none;">
-  <h2>📝 Poem Score</h2>
-  <div class="score-progress">
-    <div class="score-bar" id="score-bar"></div>
+resultMsg.innerHTML = `
+  <div id="poem-scorecard">
+    <h2>📝 Hana's Score</h2>
+    <div class="score-progress">
+      <div class="score-bar" id="scoreBar" style="width: ${score}%"></div>
+    </div>
+    <div id="scoreBreakdown">
+      <div class="breakdown-item">🌟 Overall: ${score}/100 — ${rating}</div>
+      ${Object.entries(score.breakdown || {}).map(([key, value]) =>
+        `<div class="breakdown-item">${key}: ${value}</div>`).join("")}
+    </div>
   </div>
-  <div id="score-breakdown"></div>
-</div>
-     
-        resultMsg.textContent = `Hana gives your poem a ${score}/100! ${rating}`;
-        poemForm.reset();
-        speakAsHana(`That was lovely, ${author}! You got ${score} out of 100!`);
+`;
+
+poemForm.reset();
+speakAsHana(`That was lovely, ${author}! You got ${score} out of 100!`);
       }
     });
   </script>
