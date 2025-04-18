@@ -84,57 +84,72 @@
   </footer>
 
   <!-- Scripts -->
-  <script>
-    function showSection(id) {
-      document.querySelectorAll(".section").forEach(s => s.style.display = "none");
-      document.getElementById(id).style.display = "block";
-    }
-    window.onload = () => showSection('home');
-  </script>
+ <script>
+  function showSection(id) {
+    document.querySelectorAll(".section").forEach(s => s.style.display = "none");
+    document.getElementById(id).style.display = "block";
+  }
+  window.onload = () => showSection('home');
+</script>
 
-  <script src="poem-scoring.js"></script>
-  <script src="hana-bot.js"></script>
+<script src="hana-bot.js"></script>
+<script src="google-sheet-api.js"></script> <!-- ADD THIS -->
 
-  <script>
-    const poemForm = document.getElementById("poemForm");
-    const poemList = document.getElementById("poemList");
-    const resultMsg = document.getElementById("resultMsg");
+<script>
+  const poemForm = document.getElementById("poemForm");
+  const poemList = document.getElementById("poemList");
+  const resultMsg = document.getElementById("resultMsg");
 
-    poemForm?.addEventListener("submit", async function (e) {
-      e.preventDefault();
-      const poem = document.getElementById("poem").value.trim();
-      const author = document.getElementById("author").value.trim();
-
-      if (poem && author) {
-        const score = await scorePoem(poem); // from poem-scoring.js
-        const card = document.createElement("div");
-        card.className = "poem-card";
-        card.innerHTML = `<p>${poem.replace(/\n/g, "<br>")}</p><p><em>— ${author}</em></p>`;
-        poemList.appendChild(card);
-
-const rating = score >= 85 ? "🌟 Absolutely magical!" :
-               score >= 60 ? "💖 So sweet and dreamy!" :
-               score >= 40 ? "✨ A gentle breeze of feelings." :
-                             "🫧 Needs a little more sparkle.";
-
-resultMsg.innerHTML = `
-  <div id="poem-scorecard">
-    <h2>📝 Hana's Score</h2>
-    <div class="score-progress">
-      <div class="score-bar" id="scoreBar" style="width: ${score}%"></div>
-    </div>
-    <div id="scoreBreakdown">
-      <div class="breakdown-item">🌟 Overall: ${score}/100 — ${rating}</div>
-      ${Object.entries(score.breakdown || {}).map(([key, value]) =>
-        `<div class="breakdown-item">${key}: ${value}</div>`).join("")}
-    </div>
-  </div>
-`;
-
-poemForm.reset();
-speakAsHana(`That was lovely, ${author}! You got ${score} out of 100!`);
-      }
+  function escapeHTML(str) {
+    return str.replace(/[&<>"']/g, function (m) {
+      return {
+        '&': '&amp;', '<': '&lt;', '>': '&gt;',
+        '"': '&quot;', "'": '&#039;'
+      }[m];
     });
-  </script>
+  }
+
+  poemForm?.addEventListener("submit", async function (e) {
+    e.preventDefault();
+    const poem = document.getElementById("poem").value.trim();
+    const author = document.getElementById("author").value.trim();
+
+    if (poem && author) {
+      const score = await scorePoem(poem); // from poem-scoring.js
+
+      const card = document.createElement("div");
+      card.className = "poem-card";
+      card.innerHTML = `<p>${escapeHTML(poem).replace(/\n/g, "<br>")}</p><p><em>— ${escapeHTML(author)}</em></p>`;
+      poemList.appendChild(card);
+
+      const rating = score >= 85 ? "🌟 Absolutely magical!" :
+                     score >= 60 ? "💖 So sweet and dreamy!" :
+                     score >= 40 ? "✨ A gentle breeze of feelings." :
+                                   "🫧 Needs a little more sparkle.";
+
+      resultMsg.innerHTML = `
+        <div id="poem-scorecard">
+          <h2>📝 Hana's Score</h2>
+          <div class="score-progress">
+            <div class="score-bar" id="scoreBar" style="width: ${score}%"></div>
+          </div>
+          <div id="scoreBreakdown">
+            <div class="breakdown-item">🌟 Overall: ${score}/100 — ${rating}</div>
+            ${Object.entries(score.breakdown || {}).map(([key, value]) =>
+              `<div class="breakdown-item">${key}: ${value}</div>`).join("")}
+          </div>
+        </div>
+      `;
+
+      poemForm.reset();
+      speakAsHana(`That was lovely, ${author}! You got ${score} out of 100!`);
+
+      // Save to Google Sheet
+      if (typeof savePoemToSheet === 'function') {
+        savePoemToSheet(author, poem, score);
+      }
+    }
+  });
+</script>
 </body>
 </html>
