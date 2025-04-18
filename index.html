@@ -117,6 +117,14 @@
                        score >= 40 ? "✨ A gentle breeze of feelings." :
                                      "🫧 Needs a little more sparkle.";
 
+        <div id="poem-scorecard" style="display:none;">
+  <h2>📝 Poem Score</h2>
+  <div class="score-progress">
+    <div class="score-bar" id="score-bar"></div>
+  </div>
+  <div id="score-breakdown"></div>
+</div>
+     
         resultMsg.textContent = `Hana gives your poem a ${score}/100! ${rating}`;
         poemForm.reset();
         speakAsHana(`That was lovely, ${author}! You got ${score} out of 100!`);
