@@ -2,10 +2,16 @@
 
 let useModel;
 
+// Load TensorFlow USE model with error handling
 (async () => {
-  useModel = await use.load();
+  try {
+    useModel = await use.load();
+  } catch (error) {
+    console.error("Failed to load Universal Sentence Encoder:", error);
+  }
 })();
 
+// Cosine similarity calculation
 function cosineSimilarity(vecA, vecB) {
   const dotProduct = vecA.reduce((sum, a, i) => sum + a * vecB[i], 0);
   const magA = Math.sqrt(vecA.reduce((sum, a) => sum + a * a, 0));
@@ -13,6 +19,7 @@ function cosineSimilarity(vecA, vecB) {
   return dotProduct / (magA * magB);
 }
 
+// Main scoring function
 async function analyzePoem(poemText) {
   if (!useModel) useModel = await use.load();
 
@@ -29,9 +36,11 @@ async function analyzePoem(poemText) {
   ) / words.length);
 
   const embeddings = await useModel.embed([poemText, "happy", "sad"]);
-  const poemVec = embeddings.arraySync()[0];
-  const happyVec = embeddings.arraySync()[1];
-  const sadVec = embeddings.arraySync()[2];
+  const embeddingArray = await embeddings.array();
+
+  const poemVec = embeddingArray[0];
+  const happyVec = embeddingArray[1];
+  const sadVec = embeddingArray[2];
   const sentiment = (cosineSimilarity(poemVec, happyVec) - cosineSimilarity(poemVec, sadVec) + 1) / 2;
 
   const themes = ["love", "nature", "sadness", "hope", "death", "friendship"];
@@ -53,7 +62,7 @@ async function analyzePoem(poemText) {
   };
 }
 
-// Optional UI function to display result
+// Optional standalone visual score display
 function displayPoemScore(result) {
   const scoreBox = document.createElement('div');
   scoreBox.style = `
@@ -68,10 +77,10 @@ function displayPoemScore(result) {
   scoreBox.innerHTML = `
     <h3 style="margin-top: 0;">Poem Rating Score: ${result.score}/100</h3>
     <div style="margin-top: 10px;">
-      <div><strong>Word Diversity:</strong> ${result.breakdown.wordDiversity}%</div>
-      <div><strong>Grammar:</strong> ${result.breakdown.grammarScore}%</div>
-      <div><strong>Sentiment:</strong> ${result.breakdown.sentiment}%</div>
-      <div><strong>Themes:</strong> ${result.breakdown.themeScore}%</div>
+      <div title="Ratio of unique to total words">🌐 <strong>Word Diversity:</strong> ${result.breakdown.wordDiversity}%</div>
+      <div title="Grammar composition including sentence, noun, and verb density">🧠 <strong>Grammar:</strong> ${result.breakdown.grammarScore}%</div>
+      <div title="Mood proximity between happiness and sadness">😊 <strong>Sentiment:</strong> ${result.breakdown.sentiment}%</div>
+      <div title="Matches with known poetic themes">🌈 <strong>Themes:</strong> ${result.breakdown.themeScore}%</div>
     </div>
     <progress value="${result.score}" max="100" style="width: 100%; margin-top: 10px;"></progress>
   `;
@@ -79,18 +88,21 @@ function displayPoemScore(result) {
   document.body.appendChild(scoreBox);
 }
 
+// UI-bound result renderer
 function showPoemScore(score, breakdown) {
   const card = document.getElementById('poem-scorecard');
   const bar = document.getElementById('score-bar');
   const breakdownDiv = document.getElementById('score-breakdown');
 
   card.style.display = 'block';
+  card.classList.add('show'); // for fade-in
+
   bar.style.width = score + '%';
-  
+
   breakdownDiv.innerHTML = `
-    <div class="breakdown-item">📖 Word Diversity: ${breakdown.diversity}%</div>
-    <div class="breakdown-item">🧠 Grammar Score: ${breakdown.grammar}%</div>
-    <div class="breakdown-item">😊 Sentiment: ${breakdown.sentiment}%</div>
-    <div class="breakdown-item">🌈 Theme Match: ${breakdown.themeMatch}%</div>
+    <div class="breakdown-item" title="Ratio of unique to total words">🌐 Word Diversity: ${breakdown.wordDiversity}%</div>
+    <div class="breakdown-item" title="Grammar composition including sentence, noun, and verb density">🧠 Grammar Score: ${breakdown.grammarScore}%</div>
+    <div class="breakdown-item" title="Mood proximity between happiness and sadness">😊 Sentiment: ${breakdown.sentiment}%</div>
+    <div class="breakdown-item" title="Matches with known poetic themes">🌈 Theme Match: ${breakdown.themeScore}%</div>
   `;
 }
