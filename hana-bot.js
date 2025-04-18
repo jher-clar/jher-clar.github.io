@@ -10,6 +10,13 @@ document.addEventListener("DOMContentLoaded", () => {
     "In every pause... a poem hides."
   ];
 
+const poemText = "your full poem text here";
+
+analyzePoem(poemText).then(result => {
+  console.log("Total Score:", result.score);
+  console.log("Breakdown:", result.breakdown);
+});
+  
   const hana = document.createElement("div");
   hana.classList.add("hana-bubble");
 
