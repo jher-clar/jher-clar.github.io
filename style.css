@@ -227,3 +227,68 @@ footer {
   margin: 5px 0;
   font-size: 14px;
 }
+
+/* Responsive Design */
+@media (max-width: 600px) {
+  .poem-card,
+  .form-container,
+  #poem-scorecard {
+    width: 90% !important;
+  }
+
+  nav {
+    flex-direction: column;
+    gap: 10px;
+    padding: 10px;
+  }
+
+  .hana-bubble {
+    bottom: 10px;
+    right: 10px;
+    flex-direction: column;
+    padding: 8px;
+    align-items: center;
+  }
+
+  .hana-text {
+    max-width: 150px;
+    font-size: 0.8em;
+    text-align: center;
+  }
+}
+
+/* Poem Scorecard Animation */
+#poem-scorecard {
+  animation: fadeInScale 0.5s ease;
+}
+
+@keyframes fadeInScale {
+  0% {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Hana Tooltip and Hover */
+.hana-bubble {
+  cursor: pointer;
+  position: fixed;
+}
+
+.hana-bubble:hover::after {
+  content: "Click me!";
+  position: absolute;
+  top: -30px;
+  right: 0;
+  background: #ffcced;
+  padding: 5px 10px;
+  border-radius: 8px;
+  font-size: 0.8em;
+  color: #a10068;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  white-space: nowrap;
+}
