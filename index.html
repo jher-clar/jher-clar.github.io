@@ -29,10 +29,19 @@
       <h2>Welcome to a magical world of poems!</h2>
       <p>Write with joy, rhyme with love, and let Hana help you bloom! 🌸</p>
     </div>
-    <div class="carousel">
-      <div class="poem-card">🌟 "The stars above whisper your name..."</div>
-      <div class="poem-card">🎵 "Dancing leaves in the morning light..."</div>
-      <div class="poem-card">🍬 "My heart writes melodies of spring..."</div>
+    <div class="carousel" id="poemList">
+      <div class="poem-card">
+        <p>🌟 "The stars above whisper your name..."</p>
+        <p><em>— Anonymous</em></p>
+      </div>
+      <div class="poem-card">
+        <p>🎵 "Dancing leaves in the morning light..."</p>
+        <p><em>— Anonymous</em></p>
+      </div>
+      <div class="poem-card">
+        <p>🍬 "My heart writes melodies of spring..."</p>
+        <p><em>— Anonymous</em></p>
+      </div>
     </div>
   </section>
 
@@ -41,10 +50,12 @@
     <div class="form-container">
       <h2>Submit Your Poem ✨</h2>
       <p>Write your poem below and let Hana read it! She'll rate it with sparkles and smiles 💫</p>
-      <textarea placeholder="Type your lovely poem here..." rows="8"></textarea>
-      <br>
-      <button class="submit-btn">Submit to Hana 💌</button>
-      <p class="result-message">(Hana will appear here and rate your poem!)</p>
+      <form id="poemForm">
+        <input type="text" id="author" placeholder="Your Name" required /><br />
+        <textarea id="poem" rows="8" placeholder="Type your lovely poem here..." required></textarea><br />
+        <button type="submit" class="submit-btn">Submit to Hana 💌</button>
+      </form>
+      <p class="result-message" id="resultMsg">(Hana will appear here and rate your poem!)</p>
     </div>
   </section>
 
@@ -61,6 +72,7 @@
     </div>
   </section>
 
+  <!-- Chat Bubble -->
   <div class="hana-chat">
     Hiya! I'm Hana! 💖 Wanna write a poem with me?
     I can give you little hints and sprinkle magic stars when you’re done~ 🌟
@@ -71,5 +83,27 @@
   <footer>
     Made with love by Jhermaine. 💌
   </footer>
+
+  <script>
+    const poemForm = document.getElementById("poemForm");
+    const poemList = document.getElementById("poemList");
+    const resultMsg = document.getElementById("resultMsg");
+
+    poemForm?.addEventListener("submit", function (e) {
+      e.preventDefault();
+      const poem = document.getElementById("poem").value.trim();
+      const author = document.getElementById("author").value.trim();
+
+      if (poem && author) {
+        const card = document.createElement("div");
+        card.className = "poem-card";
+        card.innerHTML = `<p>${poem.replace(/\n/g, "<br>")}</p><p><em>— ${author}</em></p>`;
+        poemList.appendChild(card);
+
+        resultMsg.textContent = `Yay! Hana says your poem is sparkly amazing, ${author}! ✨`;
+        poemForm.reset();
+      }
+    });
+  </script>
 </body>
 </html>
