@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.2.0"></script>
+    <script src="https://unpkg.com/touch-events@1.0.4/dist/touch-events.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/universal-sentence-encoder@1.3.3"></script>
+  <script src="https://unpkg.com/compromise"></script>
+  <script src="poem-scoring.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/uuid/8.3.2/uuidv4.min.js"></script>
+
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Jhermaine's Poems Library</title>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Quicksand&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header>Jhermaine's Poems Library</header>
+
+  <nav>
+    <a href="#" onclick="showSection('home')">Home</a>
+    <a href="#" onclick="showSection('submit')">Submit</a>
+    <a href="#" onclick="showSection('about')">About Hana</a>
+  </nav>
+
+  <!-- Home Section -->
+  <section class="section" id="home">
+    <div class="hero">
+      <h2>Welcome to a magical world of poems!</h2>
+      <p>Write with joy, rhyme with love, and let Hana help you bloom! 🌸</p>
+    </div>
+    <div class="carousel" id="poemList">
+      <!-- Poems will be loaded here -->
+    </div>
+        <div class="carousel" id="topPoems">
+        <h2>🏆 Top Poems</h2>
+    </div>
+  </section>
+
+  <!-- Submit Section -->
+  <section class="section" id="submit" style="display: none">
+    <div class="form-container">
+      <h2>Submit Your Poem ✨</h2>
+      <p>Write your poem below and let Hana read it! She'll rate it with sparkles and smiles 💫</p>
+      <form id="poemForm">
+        <input type="text" id="author" placeholder="Your Name" required /><br />
+        <textarea id="poem" rows="8" placeholder="Type your lovely poem here..." required></textarea><br />
+        <button type="submit" class="submit-btn">Submit to Hana 💌</button>
+      </form>
+      <p class="result-message" id="resultMsg">(Hana will appear here and rate your poem!)</p>
+    </div>
+  </section>
+
+  <!-- About Hana Section -->
+  <section class="section" id="about" style="display: none">
+    <div class="about">
+      <h2>About Hana 🧁</h2>
+      <p>
+        Hi there! I'm <strong>Jhermaine Claren Francisco</strong> — but you can call me <strong>Hana</strong>! 🌸<br><br>
+        I'm a college student who loves poetry and making people smile. This website is my cozy little corner for anyone who loves to write magical rhymes and heartwarming verses. ✨
+        <br><br>
+        Submit your poems, read others', and share your creativity with the world! 🎀 Thank you for being here — and have fun!
+      </p>
+        </div>
+    </section>
+    <div class="hana-bubble" id="hanaBubble">
+        <img src="avatar.png" alt="Hana" class="hana-avatar" onclick="showSection('submit')">
+        <div class="hana-text" id="hanaText">Hiya! I'm Hana! 💖 Wanna write a poem with me?</div>
+    </div>
+
+  <footer>
+    Made with love by Jhermaine. 💌
+  </footer>
+
+  <!-- Scripts -->
+  <script>
+    function showSection(id) {
+      document.querySelectorAll(".section").forEach(s => s.style.display = "none");
+            document.getElementById(id).style.display = "block";
+    }
+    window.onload = () => showSection('home');
+  </script>
+
+  <script src="hana-bot.js"></script>
+  <script src="poem-manager.js"></script>
+
+    <script>
+        window.addEventListener('load', () => {
+            loadPoems();
+            setupPoemForm();
+        });
+    </script>
+</body>
