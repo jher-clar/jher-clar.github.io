@@ -1,0 +1,438 @@
+/* General Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    text-decoration: none;
+    list-style: none;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    background: linear-gradient(to bottom, #f8f8f8, #e0e0e0);
+    color: #333;
+    padding-bottom: 80px;
+    line-height: 1.6;
+    overflow-x: hidden;
+    position: relative;
+    background-attachment: fixed;
+}
+
+a {
+    color: inherit;
+    text-decoration: none;
+}
+
+img {
+    max-width: 100%;
+    height: auto;
+}
+
+/* Header */
+header {
+    background: linear-gradient(to right, #ff7eb3, #ffc2e2);
+    color: #fff;
+    text-align: center;
+    padding: 20px 0;
+    font-family: 'Fredoka One', cursive;
+    font-size: 2.5em;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+    position: relative;
+    z-index: 10;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+    transition: all 0.3s ease;
+}
+
+header:hover {
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    transform: translateY(-2px);
+}
+
+.bg-wrapper {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url('avatar.png');
+    background-size: cover;
+    background-position: center;
+    opacity: 0.1;
+    z-index: -1;
+    pointer-events: none;
+    animation: subtleBackgroundShift 20s linear infinite;
+}
+
+/* Navigation */
+nav {
+  background-color: #fff;
+  display: flex;
+  justify-content: center;
+  gap: 40px;
+  padding: 12px 0;
+  font-size: 1.1rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  position: relative;
+  z-index: 10;
+}
+
+nav a {
+  color: #e84393;
+  font-weight: 500;
+  transition: color 0.3s ease;
+  padding: 10px 15px;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+
+}
+
+nav a:hover {
+  color: #fff;
+  background-color: #e84393;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+
+/* Sections */
+.section {
+  padding: 40px 20px;
+  max-width: 1000px;
+  margin: 0 auto;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+/* Hero */
+.hero {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.hero h2 {
+  font-size: 2.2rem;
+  margin-bottom: 15px;
+  color: #e84393;
+  font-weight: 600;
+}
+
+.hero p {
+  color: #555;
+}
+
+/* Poem Carousel */
+.carousel {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 30px;
+  justify-content: center;
+}
+
+.poem-card {
+  background-color: #fff0f7;
+  border: 2px dashed #ff7bbb;
+    border-radius: 20px;
+    padding: 20px;
+  width: 280px;
+  font-size: 1rem;
+  color: #444;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  position: relative;
+}
+
+
+.poem-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+
+
+
+.poem-card p {
+  margin-bottom: 10px;
+}
+
+.poem-card em {
+  color: #777;
+}
+
+/* Submit Form */
+.form-container {
+    background-color: #fff;
+    padding: 40px;
+    border-radius: 20px;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+  text-align: center;
+}
+
+textarea, input[type="text"] {
+  width: 100%;
+  margin: 10px 0;
+  padding: 12px;
+    border: 1px solid #ffb3dc;
+  border-radius: 10px;
+  font-size: 1em;
+  background-color: #fff;
+}
+
+.form-container h2 {
+  font-size: 1.8rem;
+  color: #e84393;
+}
+
+.submit-btn {
+  background-color: #e84393;
+  color: #fff;
+  border: none;
+  padding: 10px 25px;
+  font-size: 1.1rem;
+  border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease, transform 0.2s ease;
+}
+
+
+.form-container, .about { animation: scaleUp 0.4s ease forwards; }
+.submit-btn:hover {
+  background-color: #d63082;
+  transform: translateY(-2px);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+/* About Section */
+.about
+{
+    background-color: #fff0f9;
+    padding: 25px;
+    border-radius: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+  color: #333;
+  line-height: 1.8;
+}
+
+.about h2 {
+  color: #e84393;
+  margin-bottom: 10px;
+}
+
+
+/* Hana Bot Bubble */
+.hana-bubble {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    animation: float 5s infinite ease-in-out, appear 0.5s ease-out forwards;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: #fff;
+    border: 2px solid #ffc8e4;
+    border-radius: 30px;
+    padding: 10px 20px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+    transition: transform 0.4s ease, box-shadow 0.4s ease, opacity 0.4s ease;
+    opacity: 0;
+}
+
+.hana-avatar {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    border: 2px solid #ff9ac2;
+}
+
+.hana-bubble:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+}
+
+.hana-text {
+  font-size: 1rem;
+    color: #333;
+    max-width: 200px;
+    transition: opacity 0.4s ease;
+}
+.hana-text.fade-out {
+    opacity: 0;
+}
+.hana-text.fade-in {
+    opacity: 1;
+}
+
+/* Floating Animation */
+@keyframes float {
+    0%, 100% { transform: translate(0, 0); }
+    50% { transform: translate(2px, -4px); }
+}
+
+@keyframes appear {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+  
+/* Footer */
+footer {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  background-color: #ffb9dd;
+    text-align: center;
+    padding: 15px;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  color: #fff;
+  font-size: 0.9em;
+  box-shadow: 0 -2px 6px rgba(0,0,0,0.05);
+}
+
+#poem-scorecard {
+  background: #fff;
+  border: 2px solid #222;
+  border-radius: 16px;
+    padding: 25px;
+  width: 320px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  font-family: 'Poppins', sans-serif;
+  margin-top: 20px;
+}
+  
+#poem-scorecard h2 {
+  font-size: 20px;
+  margin-bottom: 10px;
+  text-align: center;
+  color: #5b2c6f;
+}
+
+.score-progress {
+  height: 20px;
+  border-radius: 10px;
+  background: #eee;
+  overflow: hidden;
+  margin-bottom: 15px;
+}
+
+.score-bar {
+  height: 100%;
+  background: linear-gradient(to right, #7d3c98, #d2b4de);
+  width: 0%;
+  transition: width 1s ease;
+}
+
+.breakdown-item {
+  margin: 5px 0;
+  font-size: 14px;
+}
+
+@keyframes scaleUp {
+    from { transform: scale(0.9); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+}
+/* Result Message */
+
+.result-message {
+  margin-top: 20px;
+  font-size: 1rem;
+  color: #777;
+}
+
+/* Responsive Design */
+@media (max-width: 600px) {
+  .poem-card,
+  .form-container,
+  #poem-scorecard {
+    width: 90% !important;
+  }
+
+  nav {
+    flex-direction: column;
+    gap: 10px;
+    padding: 15px;
+  }
+
+  .hana-bubble {
+    bottom: 15px;
+    right: 15px;
+    flex-direction: column;
+    padding: 10px;
+    align-items: center;
+  }
+
+  .hana-text {
+    max-width: 150px;
+    font-size: 0.8em;
+    text-align: center;
+  }
+  .carousel {
+      flex-direction: column;
+      align-items: center;
+  }
+
+  .poem-card {
+      width: 100%;
+      max-width: 300px;
+  }
+    
+  .section {
+      padding: 20px 10px;
+  }
+  .carousel {
+    flex-direction: column;
+    align-items: center;
+}
+
+.poem-card {
+    width: 100%;
+    max-width: 300px;
+}
+}
+
+/* Poem Scorecard Animation */
+#poem-scorecard {
+  animation: fadeInScale 0.5s ease;
+}
+
+@keyframes fadeInScale {
+  0% {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+#poem-scorecard {
+  opacity: 0;
+  transition: opacity 0.4s ease-in-out;
+}
+
+#poem-scorecard.show {
+  opacity: 1;
+}
+
+/* Hana Tooltip and Hover */
+.hana-bubble {
+  cursor: pointer;
+  position: fixed;
+}
+
+.hana-bubble:hover::after {
+  content: "Click me!";
+  position: absolute;
+  top: -30px;
+  right: 0;
+  background: #ffcced;
+  padding: 5px 10px;
+  border-radius: 8px;
+  font-size: 0.8em;
+  color: #a10068;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  white-space: nowrap;
+}
+
+@keyframes subtleBackgroundShift {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
