@@ -433,6 +433,65 @@ footer {
   white-space: nowrap;
 }
 
+/* Dialog Box Styles */
+.score-dialog-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 10000; /* Ensure it's on top */
+    opacity: 0;
+    pointer-events: none; /* Allow clicks to pass through initially */
+    transition: opacity 0.3s ease;
+}
+
+.score-dialog-overlay.show {
+    opacity: 1;
+    pointer-events: auto; /* Enable clicks when visible */
+}
+
+.score-dialog {
+    background-color: #ffeff5; /* Pastel pink */
+    border: 2px solid #ffc2e2; /* Cute pink border */
+    border-radius: 20px;
+    padding: 30px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    position: relative;
+    max-width: 400px;
+    width: 90%;
+    text-align: center;
+    opacity: 0;
+    transform: scale(0.8);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.score-dialog.show {
+    opacity: 1;
+    transform: scale(1);
+}
+
+.close-button {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    cursor: pointer;
+    font-size: 24px;
+    color: #ff7eb3; /* Pink color for the close button */
+    background: none;
+    border: none;
+    padding: 0;
+}
+
+.close-button:hover {
+    color: #d63082; /* Darker pink on hover */
+}
+
 @keyframes subtleBackgroundShift {
     0%, 100% { background-position: 0% 50%; }
     50% { background-position: 100% 50%; }
+}
