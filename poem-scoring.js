@@ -188,7 +188,7 @@
 
         // Create the score title
         const title = document.createElement('h2');
-        title.textContent = `Poem Rating: ${score}/100`;
+        title.textContent = `Your Score: ${score}/100`;
         dialog.appendChild(title);
 
         // Create the breakdown container
@@ -246,7 +246,7 @@
                  transform: translate(-50%, -50%);
                  width: 90%; /* Make responsive */
                  max-width: 400px; /* Max width on larger screens */
-                 background-color: #ffe4e1; /* Pastel pink */
+                 background-color: #fff0f5; /* Pastel pink */
                  padding: 20px;
                  border-radius: 15px;
                  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
@@ -270,7 +270,7 @@
                  width: 100%;
              }
              .breakdown-item {
-                 background-color: #f8bbd0;
+                 background-color: #f77fbe;
                  padding: 10px; /* Increased padding */
                  margin-bottom: 8px; /* Increased margin */
                  border-radius: 8px;
