@@ -1,0 +1,764 @@
+/* General Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    text-decoration: none;
+    list-style: none;
+    /* Adjusted transition for a smoother feel */
+    transition: background-color 0.4s ease, color 0.4s ease, transform 0.4s ease, box-shadow 0.4s ease, border-color 0.4s ease;
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    /* Softer background gradient */
+    background: linear-gradient(to bottom, #fefefe, #f0e0f0);
+    color: #333;
+    padding-bottom: 100px; /* Increased padding for larger footer */
+    line-height: 1.7; /* Slightly increased line height for readability */
+    overflow-x: hidden;
+    position: relative;
+    background-attachment: fixed;
+    /* Add a subtle overall pattern */
+    background-image: radial-gradient(#ffe0f0 1px, transparent 1px);
+    background-size: 20px 20px;
+}
+
+a {
+    color: inherit;
+    text-decoration: none;
+}
+
+img {
+    max-width: 100%;
+    height: auto;
+    display: block; /* Helps with image spacing issues */
+}
+
+/* Header */
+header {
+    /* Adjusted gradient for a softer look */
+    background: linear-gradient(to right, #ff99cc, #ffb3e6);
+    color: #fff;
+    text-align: center;
+    padding: 25px 0; /* Increased padding */
+    font-family: 'Fredoka One', cursive;
+    font-size: 3em; /* Slightly larger font size */
+    /* Softer box shadow */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+    position: relative;
+    z-index: 10;
+    /* Refined text shadow */
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+    transition: all 0.4s ease; /* Smoother transition */
+}
+
+header:hover {
+    /* More prominent hover effect */
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.25);
+    transform: translateY(-3px) rotate(-1deg); /* Added slight rotation */
+}
+
+.bg-wrapper {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    /* Keep existing background and animation */
+    background-image: url('avatar.png'); /* Make sure this image fits the theme */
+    background-size: cover;
+    background-position: center;
+    opacity: 0.15; /* Slightly more visible */
+    z-index: -1;
+    pointer-events: none;
+    animation: subtleBackgroundShift 25s linear infinite; /* Slower animation */
+    /* Add a subtle pink overlay */
+    &::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(255, 230, 240, 0.3); /* Light pink overlay */
+        z-index: 1;
+    }
+}
+
+/* Navigation */
+nav {
+    background-color: #fff;
+    display: flex;
+    justify-content: center;
+    gap: 30px; /* Slightly reduced gap */
+    padding: 15px 0; /* Increased padding */
+    font-size: 1.2rem; /* Slightly larger font */
+    /* Softer box shadow */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+    position: relative;
+    z-index: 10;
+    border-bottom: 2px solid #ffb3e6; /* Added a border */
+}
+
+nav a {
+    color: #ff7eb3; /* Softer pink */
+    font-weight: 600; /* Bolder font weight */
+    transition: color 0.3s ease, background-color 0.3s ease, transform 0.3s ease;
+    padding: 10px 20px; /* Increased padding */
+    border-radius: 25px; /* More rounded corners */
+    position: relative;
+    overflow: hidden; /* Hide overflow for hover effect */
+}
+
+nav a::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background-color: #ff99cc; /* Highlight color */
+    transition: left 0.3s ease;
+    z-index: -1;
+}
+
+nav a:hover::before {
+    left: 0;
+}
+
+nav a:hover {
+    color: #fff;
+    /* background-color: #e84393; */ /* Background handled by pseudo-element */
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.15);
+    transform: translateY(-2px); /* Subtle lift on hover */
+}
+
+
+/* Sections */
+.section {
+    padding: 60px 20px; /* Increased padding */
+    max-width: 1100px; /* Slightly wider max width */
+    margin: 20px auto; /* Added margin between sections */
+    background-color: #fff; /* White background for sections */
+    border-radius: 20px; /* Rounded corners */
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1); /* Softer shadow */
+    opacity: 0; /* Start hidden for fade-in effect */
+    transform: translateY(20px); /* Start slightly below */
+    animation: sectionFadeIn 0.6s ease forwards; /* Fade-in animation */
+}
+
+@keyframes sectionFadeIn {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+
+/* Hero */
+.hero {
+    text-align: center;
+    margin-bottom: 60px; /* Increased margin */
+    padding: 40px 20px;
+    background: linear-gradient(to bottom right, #ffebf2, #fff);
+    border-radius: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
+    animation: scaleUp 0.5s ease forwards;
+}
+
+.hero h2 {
+    font-size: 2.8rem; /* Larger font size */
+    margin-bottom: 20px; /* Increased margin */
+    color: #e84393;
+    font-weight: 700; /* Bolder font weight */
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.hero p {
+    color: #555;
+    font-size: 1.1rem;
+    max-width: 700px;
+    margin: 0 auto;
+}
+
+/* Poem Carousel */
+.carousel {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 40px; /* Increased gap */
+    justify-content: center;
+    padding: 20px 0;
+}
+
+.poem-card {
+    background-color: #fff0f7;
+    border: 3px dashed #ff99cc; /* Thicker, softer dashed border */
+    border-radius: 25px; /* More rounded corners */
+    padding: 25px; /* Increased padding */
+    width: 300px; /* Slightly wider cards */
+    font-size: 1rem;
+    color: #444;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1); /* Softer shadow */
+    transition: transform 0.4s ease, box-shadow 0.4s ease;
+    position: relative;
+    overflow: hidden; /* For decorative elements */
+    animation: cardPopIn 0.5s ease forwards; /* Add pop-in animation */
+    opacity: 0; /* Start hidden */
+    transform: scale(0.9); /* Start slightly smaller */
+}
+
+@keyframes cardPopIn {
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+/* Add decorative dots */
+.poem-card::before,
+.poem-card::after {
+    content: '';
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    background-color: #ffcced; /* Light pink dots */
+    border-radius: 50%;
+    opacity: 0.6;
+}
+
+.poem-card::before {
+    top: 15px;
+    right: 15px;
+}
+
+.poem-card::after {
+    bottom: 15px;
+    left: 15px;
+}
+
+
+.poem-card:hover {
+    transform: translateY(-8px) rotate(2deg); /* More pronounced hover effect with rotation */
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    border-color: #ff7eb3; /* Change border color on hover */
+}
+
+
+
+
+.poem-card p {
+    margin-bottom: 12px; /* Increased margin */
+}
+
+.poem-card em {
+    color: #777;
+    font-style: italic; /* Ensure italic */
+}
+
+/* Submit Form */
+.form-container {
+    background-color: #fff;
+    padding: 50px; /* Increased padding */
+    border-radius: 25px; /* More rounded corners */
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15); /* More prominent shadow */
+    text-align: center;
+    animation: scaleUp 0.5s ease forwards; /* Keep scaleUp animation */
+    border: 2px solid #ffb3e6; /* Added a border */
+}
+
+textarea, input[type="text"] {
+    width: 100%;
+    margin: 15px 0; /* Increased margin */
+    padding: 15px; /* Increased padding */
+    border: 2px solid #ffc2e2; /* Softer border color */
+    border-radius: 12px; /* More rounded corners */
+    font-size: 1.1em; /* Slightly larger font */
+    background-color: #fff;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+textarea:focus, input[type="text"]:focus {
+    outline: none;
+    border-color: #ff99cc; /* Highlight color on focus */
+    box-shadow: 0 0 8px rgba(255, 153, 204, 0.4); /* Soft pink glow */
+}
+
+
+.form-container h2 {
+    font-size: 2.2rem; /* Larger font size */
+    color: #e84393;
+    margin-bottom: 20px; /* Increased margin */
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.submit-btn {
+    background-color: #ff7eb3; /* Softer pink */
+    color: #fff;
+    border: none;
+    padding: 12px 30px; /* Increased padding */
+    font-size: 1.2rem; /* Larger font size */
+    border-radius: 25px; /* More rounded corners */
+    cursor: pointer;
+    transition: all 0.3s ease, transform 0.2s ease;
+    font-weight: 600;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+
+.submit-btn:hover {
+    background-color: #ff99cc; /* Lighter pink on hover */
+    transform: translateY(-3px) scale(1.05); /* More pronounced hover effect */
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+}
+
+/* About Section */
+.about {
+    background-color: #fff0f9; /* Softer background */
+    padding: 30px; /* Increased padding */
+    border-radius: 20px; /* Rounded corners */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08); /* Softer shadow */
+    color: #333;
+    line-height: 1.8;
+    animation: scaleUp 0.5s ease forwards; /* Keep scaleUp animation */
+    border: 2px dashed #ffc2e2; /* Dashed border */
+}
+
+.about h2 {
+    color: #e84393;
+    margin-bottom: 15px; /* Increased margin */
+    text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.05);
+}
+
+
+/* Hana Bot Bubble */
+.hana-bubble {
+    position: fixed;
+    bottom: 30px; /* Adjusted position */
+    right: 30px; /* Adjusted position */
+    animation: float 5s infinite ease-in-out, appear 0.5s ease-out forwards, pulse 2s infinite ease-in-out; /* Added pulse animation */
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    gap: 15px; /* Increased gap */
+    background: #fff;
+    border: 3px solid #ff99cc; /* Thicker, softer border */
+    border-radius: 40px; /* More rounded, pill shape */
+    padding: 12px 25px; /* Increased padding */
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2); /* More prominent shadow */
+    transition: transform 0.4s ease, box-shadow 0.4s ease, opacity 0.4s ease, border-color 0.4s ease;
+    opacity: 0;
+    cursor: pointer; /* Explicitly show pointer cursor */
+}
+
+.hana-avatar {
+    width: 60px; /* Larger avatar */
+    height: 60px; /* Larger avatar */
+    border-radius: 50%;
+    border: 3px solid #ff7eb3; /* Thicker, softer border */
+    object-fit: cover; /* Ensure image covers the area */
+}
+
+.hana-bubble:hover {
+    transform: translateY(-5px) scale(1.03); /* More pronounced hover effect */
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+    border-color: #ff7eb3; /* Change border color on hover */
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.02); }
+    100% { transform: scale(1); }
+}
+
+
+.hana-text {
+    font-size: 1.05rem; /* Slightly larger font */
+    color: #555; /* Softer text color */
+    max-width: 250px; /* Increased max width */
+    transition: opacity 0.4s ease;
+}
+.hana-text.fade-out {
+    opacity: 0;
+}
+.hana-text.fade-in {
+    opacity: 1;
+}
+
+/* Floating Animation - Adjusted slightly */
+@keyframes float {
+    0%, 100% { transform: translate(0, 0); }
+    50% { transform: translate(0px, -8px); } /* More vertical float */
+}
+
+@keyframes appear {
+    from { opacity: 0; transform: translateY(20px); } /* Added slight initial translation */
+    to { opacity: 1; transform: translateY(0); }
+}
+  
+/* Footer */
+footer {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    background-color: #ff99cc; /* Softer pink */
+    text-align: center;
+    padding: 20px; /* Increased padding */
+    transition: all 0.3s ease;
+    box-shadow: 0 -4px 8px rgba(0, 0, 0, 0.1); /* Softer shadow */
+    color: #fff;
+    font-size: 1em; /* Slightly larger font */
+    z-index: 10; /* Ensure it's above content */
+}
+
+footer a {
+    color: #fff;
+    text-decoration: underline;
+    margin: 0 5px;
+}
+
+footer a:hover {
+    color: #ffebf2; /* Lighter pink on hover */
+}
+
+
+/* Poem Scorecard */
+#poem-scorecard {
+    background: #fff;
+    border: 3px solid #ffc2e2; /* Softer border */
+    border-radius: 20px; /* More rounded corners */
+    padding: 30px; /* Increased padding */
+    width: 350px; /* Slightly wider */
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15); /* More prominent shadow */
+    font-family: 'Poppins', sans-serif;
+    margin-top: 20px;
+    opacity: 0; /* Start hidden */
+    transform: scale(0.9); /* Start slightly smaller */
+    animation: fadeInScale 0.6s ease forwards; /* Smoother animation */
+}
+  
+#poem-scorecard h2 {
+    font-size: 22px; /* Slightly larger font */
+    margin-bottom: 15px; /* Increased margin */
+    text-align: center;
+    color: #e84393; /* Pink heading */
+    text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.05);
+}
+
+.score-progress {
+    height: 25px; /* Taller progress bar */
+    border-radius: 12px; /* More rounded */
+    background: #ffe0f0; /* Light pink background */
+    overflow: hidden;
+    margin-bottom: 20px; /* Increased margin */
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1); /* Inner shadow */
+}
+
+.score-bar {
+    height: 100%;
+    /* Adjusted gradient to include pinks */
+    background: linear-gradient(to right, #ff99cc, #e84393);
+    width: 0%;
+    transition: width 1.5s ease-out; /* Slower, smoother transition */
+    border-radius: 12px; /* Match parent border-radius */
+}
+
+.breakdown-item {
+    margin: 8px 0; /* Increased margin */
+    font-size: 15px; /* Slightly larger font */
+    color: #555;
+}
+
+/* Animations */
+@keyframes scaleUp {
+    from { transform: scale(0.95); opacity: 0; } /* Start slightly smaller */
+    to { transform: scale(1); opacity: 1; }
+}
+/* Result Message */
+
+.result-message {
+    margin-top: 25px; /* Increased margin */
+    font-size: 1.1rem; /* Slightly larger font */
+    color: #666; /* Softer color */
+    font-weight: 500;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) { /* Adjusted breakpoint */
+    header {
+        font-size: 2em;
+        padding: 15px 0;
+    }
+
+    nav {
+        flex-direction: column;
+        gap: 10px;
+        padding: 10px;
+        font-size: 1rem;
+    }
+
+    nav a {
+        padding: 8px 15px;
+    }
+
+    .section {
+        padding: 30px 15px;
+        margin: 15px auto;
+    }
+
+    .hero h2 {
+        font-size: 2rem;
+    }
+
+    .hero p {
+        font-size: 1em;
+    }
+
+    .carousel {
+        flex-direction: column;
+        align-items: center;
+        gap: 20px; /* Adjusted gap */
+    }
+
+    .poem-card {
+        width: 95% !important; /* Use percentage for better flexibility */
+        max-width: 350px; /* Set a max-width */
+        padding: 20px;
+    }
+
+    .form-container {
+        padding: 30px;
+    }
+
+    .form-container h2 {
+        font-size: 1.8rem;
+    }
+
+    textarea, input[type="text"] {
+        padding: 10px;
+        font-size: 1em;
+        margin: 10px 0;
+    }
+
+    .submit-btn {
+        padding: 10px 20px;
+        font-size: 1em;
+    }
+
+    .about {
+        padding: 20px;
+    }
+
+    .about h2 {
+        font-size: 1.5rem;
+    }
+
+    .hana-bubble {
+        bottom: 15px;
+        right: 15px;
+        flex-direction: column;
+        padding: 8px;
+        align-items: center;
+        gap: 8px;
+        border-radius: 30px;
+    }
+
+    .hana-avatar {
+        width: 40px;
+        height: 40px;
+    }
+
+    .hana-text {
+        max-width: 120px;
+        font-size: 0.75em;
+        text-align: center;
+    }
+
+    #poem-scorecard {
+        width: 95% !important; /* Use percentage */
+        max-width: 300px; /* Set a max-width */
+        padding: 20px;
+    }
+
+    #poem-scorecard h2 {
+        font-size: 18px;
+    }
+
+    .score-progress {
+        height: 20px;
+    }
+
+    .breakdown-item {
+        font-size: 13px;
+    }
+
+    footer {
+        padding: 10px;
+        font-size: 0.8em;
+    }
+}
+
+
+/* Poem Scorecard Animation */
+/* Kept the original animation and class for triggering */
+#poem-scorecard {
+    /* animation: fadeInScale 0.5s ease; */ /* Animation controlled by .show class */
+    opacity: 0;
+    transition: opacity 0.4s ease-in-out, transform 0.4s ease-in-out;
+}
+
+#poem-scorecard.show {
+    opacity: 1;
+    transform: scale(1); /* Ensure it scales to 1 when shown */
+}
+
+@keyframes fadeInScale {
+    0% {
+        opacity: 0;
+        transform: scale(0.8);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+
+/* Hana Tooltip and Hover */
+.hana-bubble {
+    /* cursor: pointer; */ /* Already set above */
+    /* position: fixed; */ /* Already set above */
+}
+
+.hana-bubble:hover::after {
+    content: "Click me!";
+    position: absolute;
+    top: -30px;
+    right: 0;
+    background: #ffcced; /* Light pink */
+    padding: 5px 10px;
+    border-radius: 8px;
+    font-size: 0.8em;
+    color: #a10068;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    white-space: nowrap;
+    /* Added a small bounce animation to the tooltip */
+    animation: tooltipBounce 0.6s ease infinite alternate;
+}
+
+@keyframes tooltipBounce {
+    0% { transform: translateY(0); }
+    100% { transform: translateY(-5px); }
+}
+
+
+/* Dialog Box Styles */
+.score-dialog-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(255, 230, 240, 0.8); /* Lighter, pinker overlay */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 10000;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.4s ease; /* Smoother transition */
+}
+
+.score-dialog-overlay.show {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.score-dialog {
+    background-color: #ffeff5;
+    border: 3px solid #ffc2e2; /* Thicker, softer border */
+    border-radius: 25px; /* More rounded */
+    padding: 40px; /* Increased padding */
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.25); /* More prominent shadow */
+    position: relative;
+    max-width: 450px; /* Slightly wider max width */
+    width: 90%;
+    text-align: center;
+    opacity: 0;
+    transform: scale(0.7); /* Start smaller */
+    transition: opacity 0.4s ease, transform 0.4s ease;
+}
+
+.score-dialog.show {
+    opacity: 1;
+    transform: scale(1);
+}
+
+.score-dialog h2 {
+    color: #e84393;
+    margin-bottom: 15px;
+    font-size: 24px; /* Larger heading */
+}
+
+.score-dialog p {
+    margin-bottom: 20px;
+    color: #555;
+}
+
+
+.close-button {
+    position: absolute;
+    top: 15px; /* Adjusted position */
+    right: 20px; /* Adjusted position */
+    cursor: pointer;
+    font-size: 30px; /* Larger close button */
+    color: #ff7eb3;
+    background: none;
+    border: none;
+    padding: 5px; /* Added padding for easier clicking */
+    transition: color 0.3s ease, transform 0.3s ease;
+}
+
+.close-button:hover {
+    color: #e84393; /* Darker pink on hover */
+    transform: rotate(90deg); /* Rotate on hover */
+}
+
+@keyframes subtleBackgroundShift {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+}
+
+/* Add a subtle sparkle effect using pseudo-elements */
+body::before,
+body::after {
+    content: '';
+    position: fixed;
+    width: 10px;
+    height: 10px;
+    background-color: #fff;
+    box-shadow: 0 0 5px 2px rgba(255, 255, 255, 0.8);
+    border-radius: 50%;
+    z-index: 9999;
+    pointer-events: none;
+    animation: sparkle 3s infinite ease-in-out;
+}
+
+body::before {
+    top: 10%;
+    left: 5%;
+    animation-delay: 0.5s;
+}
+
+body::after {
+    bottom: 15%;
+    right: 8%;
+    animation-delay: 1.5s;
+    width: 8px;
+    height: 8px;
+}
+
+@keyframes sparkle {
+    0%, 100% { opacity: 0; transform: scale(0.5); }
+    50% { opacity: 1; transform: scale(1); }
+}
