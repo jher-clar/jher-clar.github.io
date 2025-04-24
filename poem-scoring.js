@@ -270,7 +270,7 @@
                  width: 100%;
              }
              .breakdown-item {
-                 background-color: #f77fbe;
+                 background-color: #ffa9d4;
                  padding: 10px; /* Increased padding */
                  margin-bottom: 8px; /* Increased margin */
                  border-radius: 8px;
