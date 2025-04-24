@@ -114,7 +114,7 @@
         topPoemsContainer.innerHTML = '<h2>🏆 Top Poems</h2>'; // Keep the title
 
         // Determine which poems to display (e.g., top 5)
-        const poemsToDisplay = allPoems.slice(0, 5); // Display top 5 or fewer if less are available
+        const poemsToDisplay = allPoems.slice(0, 10); // Display top 10 or fewer if less are available
 
         // Add poem cards to the container
         if (poemsToDisplay.length > 0) {
