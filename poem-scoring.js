@@ -85,6 +85,7 @@
                  await loadModel();
             } catch (e) {
                  console.error("Model not available, cannot analyze poem.", e);
+                 // Return a specific error object if model loading fails
                  return { score: 0, error: "Model loading failed." };
             }
         }
@@ -111,16 +112,14 @@
 
 
         // --- Structural Density (Former Grammar Score) ---
-        // This is still a density heuristic, not a grammar check.
-        // Renamed and its weight will be reduced.
         let structuralDensityScore = 0; // Default to 0 if NLP not available or fails
-        if (nlpAvailable && poemText.trim().length > 0) { // Use original text for parsing, check if non-empty
+        if (nlpAvailable && poemText.trim().length > 0) {
             try {
                  const nlpDoc = window.nlp(poemText);
                  const sentences = nlpDoc.sentences().length;
                  const nouns = nlpDoc.nouns().length;
                  const verbs = nlpDoc.verbs().length;
-                 // FIX: Use nlpDoc.wordCount() instead of nlpDoc.words().length
+                 // FIX: Use nlpDoc.wordCount()
                  const totalParsedWords = nlpDoc.wordCount();
 
                  if (totalParsedWords > 0) {
@@ -131,50 +130,59 @@
                      ) / totalParsedWords;
                      structuralDensityScore = Math.min(1, structuralDensityScore);
                  } else {
-                     // Handle case where wordCount is 0 but text was not empty (unlikely but possible with parsing issues)
                      console.warn("NLP parsed 0 words for structural density.");
                      structuralDensityScore = 0;
                  }
             } catch (e) {
                  console.error("Error during NLP analysis for structural density:", e);
-                 // structuralDensityScore remains 0
+                 structuralDensityScore = 0; // Ensure it's 0 on error
             }
+        } else if (poemText.trim().length > 0) {
+             // If NLP is not available but text is not empty, warn user
+             console.warn("Compromise NLP not available, Structural Density score will be 0.");
+             structuralDensityScore = 0;
         }
 
 
-        // --- Sentiment Score ---
+        // --- Sentiment Score & Theme Match Score (USE-based) ---
         let sentimentScore = 0; // Neutral default
+        // FIX: Declare themeMatchScore here so it's accessible later
+        let themeMatchScore = 0; // Default to 0
+
         const sentimentAndThemeTexts = [poemText, "happy", "sad"];
         const themes = ["love", "nature", "sadness", "hope", "death", "friendship", "beauty", "loss", "time", "journey"]; // Expanded themes
         sentimentAndThemeTexts.push(...themes); // Add themes to the list for embedding
 
         let sentimentThemeEmbeddingsTensor = null;
-        let poemVecSentimentTheme = null;
-        let happyVec = null;
-        let sadVec = null;
-        let themeEmbeddings = [];
 
         try {
              // Embed the poem, sentiment words, and themes in one batch
              sentimentThemeEmbeddingsTensor = await useModel.embed(sentimentAndThemeTexts);
+             // FIX: Separate await for .array() and add dispose
              const embeddingArray = await sentimentThemeEmbeddingsTensor.array();
 
-             poemVecSentimentTheme = embeddingArray[0];
-             happyVec = embeddingArray[1];
-             sadVec = embeddingArray[2];
-             themeEmbeddings = embeddingArray.slice(3); // Embeddings for each theme start from index 3
+             const poemVecSentimentTheme = embeddingArray[0];
+             const happyVec = embeddingArray[1];
+             const sadVec = embeddingArray[2];
+             const themeEmbeddings = embeddingArray.slice(3); // Embeddings for each theme start from index 3
 
              // Dispose the tensor after getting the array data
              sentimentThemeEmbeddingsTensor.dispose();
 
+
              // Calculate Sentiment
-             const happySimilarity = cosineSimilarity(poemVecSentimentTheme, happyVec);
-             const sadSimilarity = cosineSimilarity(poemVecSentimentTheme, sadVec);
-             sentimentScore = (happySimilarity - sadSimilarity + 1) / 2; // Normalize -1 to 1 range to 0 to 1 range
-             sentimentScore = Math.max(0, Math.min(1, sentimentScore)); // Ensure it's between 0 and 1
+             if (poemVecSentimentTheme && happyVec && sadVec) {
+                 const happySimilarity = cosineSimilarity(poemVecSentimentTheme, happyVec);
+                 const sadSimilarity = cosineSimilarity(poemVecSentimentTheme, sadVec);
+                 sentimentScore = (happySimilarity - sadSimilarity + 1) / 2; // Normalize -1 to 1 range to 0 to 1 range
+                 sentimentScore = Math.max(0, Math.min(1, sentimentScore)); // Ensure it's between 0 and 1
+             } else {
+                 console.warn("Sentiment embedding vectors not available.");
+                 sentimentScore = 0;
+             }
+
 
              // Calculate Theme Match (USE-based)
-             let themeMatchScore = 0; // Default to 0 if no themes or embedding fails
              if (themeEmbeddings.length > 0 && poemVecSentimentTheme) {
                  let maxSimilarity = -1; // Cosine similarity is between -1 and 1
                  for (const themeVec of themeEmbeddings) {
@@ -187,28 +195,25 @@
                  themeMatchScore = (maxSimilarity + 1) / 2;
                  themeMatchScore = Math.max(0, Math.min(1, themeMatchScore)); // Ensure 0-1
              } else {
-                 console.warn("No themes or embedding failed for theme matching.");
+                 console.warn("No themes or poem embedding for theme matching.");
+                 themeMatchScore = 0; // Ensure it's 0
              }
-
-             // Theme Match Score variable is calculated inside this try block, need to return it
-             // Or recalculate it outside if embedding fails. Let's calculate and use it here.
 
         } catch (e) {
              console.error("Error during sentiment/theme embedding or analysis:", e);
-             // sentimentScore remains 0, themeMatchScore will be based on its initialization (0)
-             // Need to ensure themeMatchScore is accessible outside the try block
-             // Let's keep sentimentScore and themeMatchScore initialized outside and update inside
-             sentimentScore = 0; // Reset on error
-             themeMatchScore = 0; // Reset on error
+             // Ensure scores are 0 on error
+             sentimentScore = 0;
+             themeMatchScore = 0;
+             // Dispose tensor if it was created before error
+             if (sentimentThemeEmbeddingsTensor) {
+                 sentimentThemeEmbeddingsTensor.dispose();
+             }
         }
-
-        // Use themeMatchScore calculated in the block above
-        let finalThemeMatchScore = themeMatchScore;
 
 
         // --- Cohesion Score (USE-based, Semantic Flow) ---
         let cohesionScore = 0; // Default to 0 if NLP not available or fails
-        if (nlpAvailable && poemText.trim().length > 0) { // Need NLP to split sentences reliably
+        if (nlpAvailable && poemText.trim().length > 0) {
             try {
                  const nlpDoc = window.nlp(poemText);
                  const sentences = nlpDoc.sentences().out('array').filter(s => s.trim().length > 0); // Get sentences as array
@@ -223,9 +228,14 @@
                      let pairCount = 0;
 
                      for (let i = 0; i < sentenceEmbeddings.length - 1; i++) {
-                         const sim = cosineSimilarity(sentenceEmbeddings[i], sentenceEmbeddings[i+1]);
-                         totalSimilarity += sim;
-                         pairCount++;
+                         // Ensure sentence embeddings are valid before calculating similarity
+                         if (sentenceEmbeddings[i] && sentenceEmbeddings[i+1] && sentenceEmbeddings[i].length > 0) {
+                              const sim = cosineSimilarity(sentenceEmbeddings[i], sentenceEmbeddings[i+1]);
+                              totalSimilarity += sim;
+                              pairCount++;
+                         } else {
+                             console.warn(`Skipping similarity calculation for sentence pair ${i}-${i+1} due to invalid embeddings.`);
+                         }
                      }
 
                      if (pairCount > 0) {
@@ -234,8 +244,9 @@
                          cohesionScore = (averageSimilarity + 1) / 2;
                          cohesionScore = Math.max(0, Math.min(1, cohesionScore)); // Ensure 0-1
                      } else {
-                         console.warn("Only one sentence found for cohesion calculation, setting to neutral (0.5).");
-                         cohesionScore = 0.5; // Or perhaps 1? Hard to define for 1 sentence. Neutral feels safer.
+                         // If only one sentence or no valid pairs after filtering
+                         console.warn("Not enough valid sentence pairs for cohesion calculation. Setting to neutral (0.5) if > 0 sentences, else 0.");
+                         cohesionScore = sentences.length > 0 ? 0.5 : 0;
                      }
 
                  } else if (sentences.length === 1) {
@@ -248,12 +259,12 @@
 
             } catch (e) {
                  console.error("Error during cohesion analysis:", e);
-                 // cohesionScore remains 0
+                 cohesionScore = 0; // Ensure it's 0 on error
             }
         } else if (poemText.trim().length > 0) {
-             console.warn("Compromise NLP not available, cannot calculate structural density or cohesion score.");
-             structuralDensityScore = 0; // Ensure default if NLP check passes but NLP logic fails
-             cohesionScore = 0; // Ensure default
+             // If NLP is not available but text is not empty, warn user
+             console.warn("Compromise NLP not available, Cohesion score will be 0.");
+             cohesionScore = 0;
         }
 
 
@@ -270,19 +281,20 @@
             wordDiversityScore * 20 +
             structuralDensityScore * 10 +
             sentimentScore * 10 +
-            finalThemeMatchScore * 30 + // Use the calculated theme score
+            themeMatchScore * 30 + // Now correctly scoped
             cohesionScore * 30
         );
 
         const score = Math.round(rawScore);
 
+        // Return the structured result object
         return {
             score: Math.max(0, Math.min(100, score)), // Ensure score is between 0 and 100
             breakdown: {
                 wordDiversity: Math.round(wordDiversityScore * 100),
                 structuralDensity: Math.round(structuralDensityScore * 100),
                 sentiment: Math.round(sentimentScore * 100),
-                themeMatch: Math.round(finalThemeMatchScore * 100), // Use the calculated theme score
+                themeMatch: Math.round(themeMatchScore * 100), // Now correctly scoped
                 cohesion: Math.round(cohesionScore * 100)
             }
         };
@@ -291,6 +303,23 @@
     // UI-bound result renderer (now displays a popup dialog)
     // Expose to global scope if needed
     window.showPoemScore = function(score, breakdown) {
+         // FIX: Check if breakdown is undefined before trying to access properties
+         if (!breakdown) {
+             console.error("showPoemScore called with undefined breakdown.");
+             // Display a minimal error dialog or message instead
+             let dialog = document.getElementById('poemScoreDialog');
+              if (!dialog) {
+                 dialog = document.createElement('div');
+                 dialog.id = 'poemScoreDialog';
+                 dialog.classList.add('poem-score-dialog');
+                 document.body.appendChild(dialog);
+              }
+             dialog.innerHTML = '<h2>Error</h2><p>Could not retrieve poem breakdown.</p>';
+             dialog.style.display = 'flex';
+              requestAnimationFrame(() => { requestAnimationFrame(() => { dialog.classList.add('show'); }); });
+             return; // Stop execution if breakdown is undefined
+         }
+
         // Create the dialog box container
         let dialog = document.getElementById('poemScoreDialog');
         if (!dialog) {
