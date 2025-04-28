@@ -170,7 +170,7 @@
                 let result = null; // Initialize result to null
                  if(resultMsg) {
                     resultMsg.textContent = "Hana is analyzing your poem..."; // Provide user feedback while analyzing
-                    resultMsg.style.color = 'blue'; // Optional styling
+                    resultMsg.style.color = 'black'; // Optional styling
                  }
 
                 // FIX: Add try...catch block around the analyzePoem call
@@ -219,14 +219,14 @@
                     // Fallback: maybe just log the score or display in resultMsg
                     if(resultMsg) {
                         resultMsg.textContent = `Poem submitted! Score: ${result.score}/100`;
-                        resultMsg.style.color = 'green'; // Optional styling
+                        resultMsg.style.color = 'black'; // Optional styling
                     }
                 }
 
                  // Clear the "Analyzing..." message or replace it
                  if(resultMsg) {
                      resultMsg.textContent = `Poem submitted! Score: ${result.score}/100`;
-                     resultMsg.style.color = 'green'; // Optional styling
+                     resultMsg.style.color = 'black'; // Optional styling
                  }
 
 
