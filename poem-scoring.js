@@ -32,7 +32,10 @@
                 .then(model => {
                     useModel = model;
                     console.log("Universal Sentence Encoder model loaded.");
-                    return model;
+                    // Optional: Pre-embed some common words like themes/sentiment to speed up first analysis
+                    // This adds a small delay to initial load but makes first analyze call faster.
+                    // Disabled for now, load on demand in analyzePoem.
+                    // return useModel.embed(["happy", "sad", "love", "nature"]);
                 })
                 .catch(error => {
                     console.error("Failed to load Universal Sentence Encoder:", error);
@@ -43,10 +46,10 @@
         return modelLoadingPromise;
     }
 
-    // Start loading the model as soon as the script executes
-    // loadModel(); // Commenting this out, will load on first analyzePoem call instead,
-                   // to avoid loading if the function is never called.
-                   // If you want it to load immediately on page load, uncomment this.
+    // Optional: Trigger initial model load in the background as soon as script is parsed
+    // Uncomment if you want the model to start loading immediately on page load.
+    // This can make the first analysis faster, but consumes resources on page load.
+    // loadModel();
 
 
     // Cosine similarity calculation
@@ -89,11 +92,12 @@
         // Check for NLP library
         const nlpAvailable = typeof window.nlp === 'function';
         if (!nlpAvailable) {
-            console.warn("Compromise NLP library (window.nlp) is not available. Some metrics will be affected.");
+            console.warn("Compromise NLP library (window.nlp) is not available. Structural Density and Cohesion will be 0.");
         }
 
 
         // --- Word Diversity (with Stopword Removal) ---
+        // Clean text for word counting, preserving spaces and internal punctuation initially
         const cleanedForWords = poemText.trim().toLowerCase().replace(/[.,!?;:"'(){}[\]]/g, ' '); // Replace punctuation with space
         const words = cleanedForWords.split(/\s+/).filter(word => word.length > 0 && !stopwords.has(word)); // Split, remove empty, and remove stopwords
 
@@ -109,14 +113,15 @@
         // --- Structural Density (Former Grammar Score) ---
         // This is still a density heuristic, not a grammar check.
         // Renamed and its weight will be reduced.
-        let structuralDensityScore = 0;
+        let structuralDensityScore = 0; // Default to 0 if NLP not available or fails
         if (nlpAvailable && poemText.trim().length > 0) { // Use original text for parsing, check if non-empty
             try {
                  const nlpDoc = window.nlp(poemText);
                  const sentences = nlpDoc.sentences().length;
                  const nouns = nlpDoc.nouns().length;
                  const verbs = nlpDoc.verbs().length;
-                 const totalParsedWords = nlpDoc.words().length; // Use NLP's word count
+                 // FIX: Use nlpDoc.wordCount() instead of nlpDoc.words().length
+                 const totalParsedWords = nlpDoc.wordCount();
 
                  if (totalParsedWords > 0) {
                      structuralDensityScore = (
@@ -125,6 +130,10 @@
                          verbs * 0.2
                      ) / totalParsedWords;
                      structuralDensityScore = Math.min(1, structuralDensityScore);
+                 } else {
+                     // Handle case where wordCount is 0 but text was not empty (unlikely but possible with parsing issues)
+                     console.warn("NLP parsed 0 words for structural density.");
+                     structuralDensityScore = 0;
                  }
             } catch (e) {
                  console.error("Error during NLP analysis for structural density:", e);
@@ -133,80 +142,83 @@
         }
 
 
-        // --- Sentiment Score (Keep for now, lower weight) ---
+        // --- Sentiment Score ---
         let sentimentScore = 0; // Neutral default
-        try {
-            const embeddings = await useModel.embed([poemText, "happy", "sad"]);
-            const embeddingArray = await embeddings.array();
-
-            const poemVec = embeddingArray[0];
-            const happyVec = embeddingArray[1];
-            const sadVec = embeddingArray[2];
-
-            const happySimilarity = cosineSimilarity(poemVec, happyVec);
-            const sadSimilarity = cosineSimilarity(poemVec, sadVec);
-
-            // Normalize difference from -1 to 1 range to 0 to 1 range
-            // sentimentScore close to 1 means more 'happy' than 'sad'
-            // sentimentScore close to 0 means more 'sad' than 'happy'
-            // sentimentScore near 0.5 means neutral
-            sentimentScore = (happySimilarity - sadSimilarity + 1) / 2;
-            sentimentScore = Math.max(0, Math.min(1, sentimentScore));
-
-        } catch (e) {
-             console.error("Error during sentiment analysis:", e);
-             // sentimentScore remains 0
-        }
-
-
-        // --- Theme Match Score (USE-based) ---
-        // Define themes as phrases or single words
+        const sentimentAndThemeTexts = [poemText, "happy", "sad"];
         const themes = ["love", "nature", "sadness", "hope", "death", "friendship", "beauty", "loss", "time", "journey"]; // Expanded themes
-        let themeMatchScore = 0; // Default to 0 if no themes or embedding fails
-        let themeEmbeddings = null;
+        sentimentAndThemeTexts.push(...themes); // Add themes to the list for embedding
+
+        let sentimentThemeEmbeddingsTensor = null;
+        let poemVecSentimentTheme = null;
+        let happyVec = null;
+        let sadVec = null;
+        let themeEmbeddings = [];
 
         try {
-             // Embed the poem and all themes
-             const textsToEmbed = [poemText, ...themes];
-             const embeddings = await useModel.embed(textsToEmbed);
-             const embeddingArray = await embeddings.array();
+             // Embed the poem, sentiment words, and themes in one batch
+             sentimentThemeEmbeddingsTensor = await useModel.embed(sentimentAndThemeTexts);
+             const embeddingArray = await sentimentThemeEmbeddingsTensor.array();
 
-             const poemVec = embeddingArray[0];
-             themeEmbeddings = embeddingArray.slice(1); // Embeddings for each theme
+             poemVecSentimentTheme = embeddingArray[0];
+             happyVec = embeddingArray[1];
+             sadVec = embeddingArray[2];
+             themeEmbeddings = embeddingArray.slice(3); // Embeddings for each theme start from index 3
 
-             if (themeEmbeddings.length > 0 && poemVec) {
+             // Dispose the tensor after getting the array data
+             sentimentThemeEmbeddingsTensor.dispose();
+
+             // Calculate Sentiment
+             const happySimilarity = cosineSimilarity(poemVecSentimentTheme, happyVec);
+             const sadSimilarity = cosineSimilarity(poemVecSentimentTheme, sadVec);
+             sentimentScore = (happySimilarity - sadSimilarity + 1) / 2; // Normalize -1 to 1 range to 0 to 1 range
+             sentimentScore = Math.max(0, Math.min(1, sentimentScore)); // Ensure it's between 0 and 1
+
+             // Calculate Theme Match (USE-based)
+             let themeMatchScore = 0; // Default to 0 if no themes or embedding fails
+             if (themeEmbeddings.length > 0 && poemVecSentimentTheme) {
                  let maxSimilarity = -1; // Cosine similarity is between -1 and 1
                  for (const themeVec of themeEmbeddings) {
-                     const similarity = cosineSimilarity(poemVec, themeVec);
+                     const similarity = cosineSimilarity(poemVecSentimentTheme, themeVec);
                      if (similarity > maxSimilarity) {
                          maxSimilarity = similarity;
                      }
                  }
                  // Normalize max similarity from -1 to 1 range to 0 to 1 range
-                 // A score near 1 means it's very similar to at least one theme
-                 // A score near 0 means it's somewhat related (0 similarity)
-                 // A score near -1 means it's conceptually opposite (unlikely for themes)
                  themeMatchScore = (maxSimilarity + 1) / 2;
                  themeMatchScore = Math.max(0, Math.min(1, themeMatchScore)); // Ensure 0-1
-
              } else {
                  console.warn("No themes or embedding failed for theme matching.");
              }
+
+             // Theme Match Score variable is calculated inside this try block, need to return it
+             // Or recalculate it outside if embedding fails. Let's calculate and use it here.
+
         } catch (e) {
-             console.error("Error during USE-based theme analysis:", e);
-             // themeMatchScore remains 0
+             console.error("Error during sentiment/theme embedding or analysis:", e);
+             // sentimentScore remains 0, themeMatchScore will be based on its initialization (0)
+             // Need to ensure themeMatchScore is accessible outside the try block
+             // Let's keep sentimentScore and themeMatchScore initialized outside and update inside
+             sentimentScore = 0; // Reset on error
+             themeMatchScore = 0; // Reset on error
         }
+
+        // Use themeMatchScore calculated in the block above
+        let finalThemeMatchScore = themeMatchScore;
 
 
         // --- Cohesion Score (USE-based, Semantic Flow) ---
-        let cohesionScore = 0; // Default to 0
+        let cohesionScore = 0; // Default to 0 if NLP not available or fails
         if (nlpAvailable && poemText.trim().length > 0) { // Need NLP to split sentences reliably
             try {
                  const nlpDoc = window.nlp(poemText);
                  const sentences = nlpDoc.sentences().out('array').filter(s => s.trim().length > 0); // Get sentences as array
 
                  if (sentences.length > 1) {
-                     const sentenceEmbeddings = await useModel.embed(sentences).array();
+                     // FIX: Separate embed and array calls, add dispose
+                     const sentenceEmbeddingsTensor = await useModel.embed(sentences);
+                     const sentenceEmbeddings = await sentenceEmbeddingsTensor.array();
+                     sentenceEmbeddingsTensor.dispose(); // Dispose the tensor
+
                      let totalSimilarity = 0;
                      let pairCount = 0;
 
@@ -219,12 +231,11 @@
                      if (pairCount > 0) {
                          const averageSimilarity = totalSimilarity / pairCount;
                          // Normalize average similarity from -1 to 1 range to 0 to 1 range
-                         // Higher score means sentences are semantically closer on average
                          cohesionScore = (averageSimilarity + 1) / 2;
                          cohesionScore = Math.max(0, Math.min(1, cohesionScore)); // Ensure 0-1
                      } else {
-                         console.warn("Only one sentence found, cannot calculate cohesion.");
-                         cohesionScore = 0.5; // Or maybe 1? Hard to define for 1 sentence. Let's make it neutral.
+                         console.warn("Only one sentence found for cohesion calculation, setting to neutral (0.5).");
+                         cohesionScore = 0.5; // Or perhaps 1? Hard to define for 1 sentence. Neutral feels safer.
                      }
 
                  } else if (sentences.length === 1) {
@@ -240,26 +251,27 @@
                  // cohesionScore remains 0
             }
         } else if (poemText.trim().length > 0) {
-             console.warn("Compromise NLP not available, cannot calculate cohesion score.");
-             // cohesionScore remains 0
+             console.warn("Compromise NLP not available, cannot calculate structural density or cohesion score.");
+             structuralDensityScore = 0; // Ensure default if NLP check passes but NLP logic fails
+             cohesionScore = 0; // Ensure default
         }
 
 
         // --- Final Score Calculation ---
         // Adjusted Weights:
-        // Word Diversity (Meaningful words): 20% (Good vocabulary is important)
-        // Structural Density (Former Grammar): 10% (Acknowledge its limitation, but some structure is good)
-        // Sentiment: 10% (Acknowledge limitation, sentiment is a factor but not the only one)
-        // Theme Match (USE-based): 30% (Semantic relevance to themes)
-        // Cohesion (USE-based): 30% (Semantic flow between lines/sentences)
+        // Word Diversity (Meaningful words): 20%
+        // Structural Density (Former Grammar): 10%
+        // Sentiment: 10%
+        // Theme Match (USE-based): 30%
+        // Cohesion (USE-based): 30%
         // Total: 20 + 10 + 10 + 30 + 30 = 100%
 
         const rawScore = (
             wordDiversityScore * 20 +
-            structuralDensityScore * 10 + // Reduced weight
-            sentimentScore * 10 +         // Reduced weight
-            themeMatchScore * 30 +        // Increased weight (USE)
-            cohesionScore * 30            // New metric, significant weight (USE)
+            structuralDensityScore * 10 +
+            sentimentScore * 10 +
+            finalThemeMatchScore * 30 + // Use the calculated theme score
+            cohesionScore * 30
         );
 
         const score = Math.round(rawScore);
@@ -270,7 +282,7 @@
                 wordDiversity: Math.round(wordDiversityScore * 100),
                 structuralDensity: Math.round(structuralDensityScore * 100),
                 sentiment: Math.round(sentimentScore * 100),
-                themeMatch: Math.round(themeMatchScore * 100),
+                themeMatch: Math.round(finalThemeMatchScore * 100), // Use the calculated theme score
                 cohesion: Math.round(cohesionScore * 100)
             }
         };
@@ -317,10 +329,10 @@
         // Use createElement and textContent for safety and clarity
         const items = [
             { label: '📚 Word Diversity', value: breakdown.wordDiversity, title: 'Ratio of unique meaningful words to total meaningful words' },
-            { label: '🏗️ Structural Density', value: breakdown.structuralDensity, title: 'Density of sentences, nouns, and verbs (Heuristic, not grammar correctness)' },
+            { label: '🏗️ Structural Density', value: breakdown.structuralDensity, title: 'Density of sentences, nouns, and verbs (Heuristic, relies on NLP parsing)' }, // Updated tooltip
             { label: '😊 Sentiment', value: breakdown.sentiment, title: 'Mood proximity towards positive/negative sentiment (Simple metric)' },
             { label: '💡 Theme Match', value: breakdown.themeMatch, title: 'Semantic similarity to common poetic themes (USE-based)' },
-            { label: '🌊 Cohesion', value: breakdown.cohesion, title: 'Semantic flow/relatedness between adjacent sentences/lines (USE-based)' } // New item
+            { label: '🌊 Cohesion', value: breakdown.cohesion, title: 'Semantic flow/relatedness between adjacent sentences/lines (USE-based, relies on NLP parsing)' } // Updated tooltip
         ];
 
         items.forEach(item => {
@@ -377,6 +389,8 @@
                  color: #333; /* Default text color */
                  font-family: sans-serif; /* Use a common font */
                  box-sizing: border-box; /* Include padding in width */
+                 text-align: left; /* Align text left for readability */
+                 border: 1px solid #ff69b4; /* Add a subtle border */
              }
              .poem-score-dialog.show {
                  opacity: 1; /* Fully visible */
@@ -387,6 +401,7 @@
                  margin-bottom: 20px; /* Increased margin */
                  font-size: 1.6em; /* Adjusted font size */
                  text-align: center;
+                 width: 100%; /* Ensure title is centered */
              }
              .score-breakdown {
                  display: flex;
@@ -404,6 +419,7 @@
                  justify-content: space-between; /* Space out label and value */
                  color: #444; /* Text color for items */
                  box-shadow: 0 2px 4px rgba(0,0,0,0.1); /* Subtle shadow for items */
+                 border: 1px solid #ff9cd0; /* Add a subtle border to items */
              }
               .breakdown-item span:first-child {
                  font-weight: bold; /* Make labels bold */
@@ -452,11 +468,5 @@
          `;
          document.head.appendChild(styles);
     }
-
-    // Optional: Trigger initial model load in the background
-    // Uncomment if you want the model to start loading as soon as the script runs.
-    // This can make the first analysis faster, but consumes resources on page load.
-    // loadModel();
-
 
 })(); // End of IIFE
